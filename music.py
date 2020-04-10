@@ -9,10 +9,23 @@ import psycopg2
 import secrets
 import string
 from keys import tokenmusic, dbname, user, password, host
+
+days = {
+	'пн': 'Понедельник',
+	'вт': 'Втор'
+}
+
+def reactToDate(day, body):
+	body = body.replace(day, '')
+	connection=psycopg2.connect(dbname=dbname, user=user, host=host, password=password)
+    	q = connection.cursor()
+    	q.execute(f"UPDATE music_info SET Info = '{body}' WHERE Day = '{days[day]}'")
+    	connection.commit()
+    	connection.close()
+	
+	return body
+
 def music():
-
-
-
     vk = vk_api.VkApi(token = tokenmusic)
     vk._auth_token()
 
@@ -140,60 +153,19 @@ def music():
                     vk.method("messages.send", {"peer_id": toid, "message": "5469380060874566", "keyboard": keyboard, "random_id": 0})
                 
                 elif body.find("пн") != -1:
-                    body = body.replace('пн', '')
-                    
-                    connection=psycopg2.connect(dbname=dbname, user=user, host=host, password=password)
-                    q = connection.cursor()
-                    q.execute("UPDATE music_info SET Info = '%s' WHERE Day = 'Понедельник'" % (body))
-                    connection.commit()
-                    connection.close()
+                    body = reactToDate('пн', body)
                 elif body.find("вт") != -1:
-                    body = body.replace('вт', '')
-                    
-                    connection=psycopg2.connect(dbname=dbname, user=user, host=host, password=password)
-                    q = connection.cursor()
-                    q.execute("UPDATE music_info SET Info = '%s' WHERE Day = 'Вторник'" % (body))
-                    connection.commit()
-                    connection.close()
+                    body = reactToDate('вт', body)
                 elif body.find("ср") != -1:
-                    body = body.replace('ср', '')
-                    
-                    connection=psycopg2.connect(dbname=dbname, user=user, host=host, password=password)
-                    q = connection.cursor()
-                    q.execute("UPDATE music_info SET Info = '%s' WHERE Day = 'Среда'" % (body))
-                    connection.commit()
-                    connection.close()
+                    body = reactToDate('ср', body)
                 elif body.find("чт") != -1:
-                    body = body.replace('чт', '')
-                    
-                    connection=psycopg2.connect(dbname=dbname, user=user, host=host, password=password)
-                    q = connection.cursor()
-                    q.execute("UPDATE music_info SET Info = '%s' WHERE Day = 'Четверг'" % (body))
-                    connection.commit()
-                    connection.close()
+                    body = reactToDate('чт', body)
                 elif body.find("пт") != -1:
-                    body = body.replace('пт', '')
-                    
-                    connection=psycopg2.connect(dbname=dbname, user=user, host=host, password=password)
-                    q = connection.cursor()
-                    q.execute("UPDATE music_info SET Info = '%s' WHERE Day = 'Пятница'" % (body))
-                    connection.commit()
-                    connection.close()
+                    body = reactToDate('пт', body)
                 elif body.find("сб") != -1:
-                    body = body.replace('сб', '')
-                    
-                    connection=psycopg2.connect(dbname=dbname, user=user, host=host, password=password)
-                    q = connection.cursor()
-                    q.execute("UPDATE music_info SET Info = '%s' WHERE Day = 'Суббота'" % (body))
-                    connection.commit()
-                    connection.close()
+                    body = reactToDate('сб', body)
                 elif body.find("вс") != -1:
-                    body = body.replace('вс', '')
-                    connection=psycopg2.connect(dbname=dbname, user=user, host=host, password=password)
-                    q = connection.cursor()
-                    q.execute("UPDATE music_info SET Info = '%s' WHERE Day = 'Воскресенье'" % (body))
-                    connection.commit()
-                    connection.close()
+                    body = reactToDate('вс', body)
                 elif body.find("создать бд") != -1:
                     connection=psycopg2.connect(dbname=dbname, user=user, host=host, password=password)
                     q = connection.cursor()
